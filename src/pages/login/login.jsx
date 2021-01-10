@@ -7,11 +7,14 @@
  * @FilePath: \react-app\src\pages\login\login.jsx
  */
 import React, { Component } from "react"
-import { Form, Input, Button } from "antd"
+import { Redirect } from 'react-router-dom'
+import { Form, Input, Button, message } from "antd"
 import { UserOutlined, LockOutlined } from "@ant-design/icons"
 import Logo from "../../assets/images/logo1.png"
+import { saveUserInfo } from '../../utils/saveUserInfo'
 import "./login.less"
 import { reqLogin } from '../../api'
+import { saveUser } from '../../utils/storageUtils'
 // import { Components } from "antd/lib/date-picker/generatePicker"
 const Item = Form.Item
 const uRules = [
@@ -29,12 +32,23 @@ const pRules = [
 ]
 class Login extends Component {
   formRef = React.createRef()
-  handleSubmit = (values) => {
-    console.log(values)
-    reqLogin(values).then(res => console.log(res))
+  handleSubmit = async (values) => {
+    let result = await reqLogin(values)
+    if (result.status === 0) {
+      const user = result.data
+      saveUserInfo.user = user
+      saveUser(user)
+      message.success('登录成功')
+      this.props.history.replace('/')
+    } else if (result.status === 1) {
+      message.error(result.msg)
+    }
   }
   render () {
-    console.log(this.props)
+    const user = saveUserInfo.user
+    if (user.user && saveUserInfo._id) {
+      <Redirect to="/admin" />
+    }
     return (
       <div className="login">
         <header className="login-header">
@@ -44,7 +58,7 @@ class Login extends Component {
           <h3>用户登陆</h3>
           <Form ref={this.formRef} onFinish={this.handleSubmit} className="login-form">
             <Item
-              name="userName"
+              name="username"
               rules={uRules}>
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
@@ -52,7 +66,7 @@ class Login extends Component {
               />
             </Item>
             <Item
-              name="passWord"
+              name="password"
               rules={pRules}>
               <Input
                 prefix={<LockOutlined className="site-form-item-icon" />}
@@ -71,7 +85,7 @@ class Login extends Component {
             </Item>
           </Form>
         </section>
-      </div>
+      </div >
     )
   }
 }

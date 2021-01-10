@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-
+import { getUser } from './utils/storageUtils'
+import { saveUserInfo } from './utils/saveUserInfo'
+import zh_CN from 'antd/lib/locale-provider/zh_CN'
+import { ConfigProvider } from 'antd'
+const user = getUser()
+if (user && user._id) {
+  saveUserInfo.user = user
+}
 ReactDOM.render(
-  // <React.StrictMode>
-  <App />,
-  // </React.StrictMode>,
+  <ConfigProvider locale={zh_CN}>
+    <App />
+  </ConfigProvider>,
+
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

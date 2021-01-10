@@ -9,6 +9,7 @@ export default function request (url, data = {}, method = "GET") {
       promise = axios.post(url, data)
     }
     promise.then(response => {
+      console.log(response.data)
       resolve(response.data)
     }).catch(error => {
       message.error('请求错误：' + error.message)
