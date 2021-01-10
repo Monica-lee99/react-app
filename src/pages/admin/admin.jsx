@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 class Admin extends Component {
-  render() {
+  render () {
+    console.log(this.props)
     return <div>Admin</div>;
   }
 }
